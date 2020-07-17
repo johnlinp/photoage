@@ -73,6 +73,12 @@ latest photo: /path/to/photos/2.jpg, 5 days since 2017/06/06
 - 2 days since 2017/06/06: /path/to/photos/1.jpg, /path/to/photos/4.jpg
 1 photo(s) with unknown date:
 - /path/to/photos/5.jpg
+$ photoage --auto-detect-birthday /path/to/photos/*.jpg
+/path/to/photos/1.jpg: 2 days since 2017/06/06
+/path/to/photos/2.jpg: 5 days since 2017/06/06
+/path/to/photos/3.jpg: 0 days since 2017/06/06
+/path/to/photos/4.jpg: 2 days since 2017/06/06
+/path/to/photos/5.jpg: unknown date of photo token
 ```
 
 Other options can be found by typing:

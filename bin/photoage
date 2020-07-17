@@ -17,6 +17,7 @@ class PhotoageCli:
         parser.add_argument('--offset', '-o', type=str, default=None, help='Apply an offset to the cutting point')
         parser.add_argument('--summary', '-s', action='store_true', help='Switch to summary mode')
         parser.add_argument('--enable-stat-method', '-t', action='store_true', help='Whether stat method should be enabled')
+        parser.add_argument('--auto-detect-birthday', '-d', action='store_true', help='To enable auto-detection of the birthday if birthday is not present')
         parser.add_argument('--verbose', '-v', action='store_true', help='When you want to debug')
 
         return parser.parse_args()
@@ -27,17 +28,31 @@ class PhotoageCli:
 
         logging.debug(f'file_paths: {args.file_paths}')
 
+        birthday = args.birthday
+        if args.auto_detect_birthday and not birthday:
+            get_date_time_options = PhotoageCli._make_get_date_time_options(args.enable_stat_method)
+            logging.debug(f'get_date_time_options: {get_date_time_options}')
+            first_date_time = None
+            for file_path in args.file_paths:
+                date_time = photoage.get_date_time(file_path, **get_date_time_options)
+                if date_time is None:
+                    continue
+                if first_date_time is None or date_time < first_date_time:
+                    first_date_time = date_time
+            if first_date_time is not None:
+                birthday = first_date_time.strftime('%Y/%m/%d')
+
         results = []
+        calculate_days_options = PhotoageCli._make_calculate_days_options(birthday, args.offset, args.enable_stat_method)
+        logging.debug(f'calculate_days_options: {calculate_days_options}')
         for file_path in args.file_paths:
-            options = PhotoageCli._make_options(args.birthday, args.offset, args.enable_stat_method)
-            logging.debug(f'options: {options}')
-            days = photoage.calculate_days(file_path, **options)
+            days = photoage.calculate_days(file_path, **calculate_days_options)
             results.append((file_path, days))
 
         if not args.summary:
-            PhotoageCli._print_plain_results(results, args.birthday)
+            PhotoageCli._print_plain_results(results, birthday)
         else:
-            PhotoageCli._print_summary_results(results, args.birthday)
+            PhotoageCli._print_summary_results(results, birthday)
 
         logging.debug('shutting down')
 
@@ -48,7 +63,14 @@ class PhotoageCli:
         logging.basicConfig(level=log_level, format=log_format)
 
     @staticmethod
-    def _make_options(birthday, offset, enable_stat_method):
+    def _make_get_date_time_options(enable_stat_method):
+        options = {}
+        if enable_stat_method:
+            options['methods'] = ('exif', 'stat')
+        return options
+
+    @staticmethod
+    def _make_calculate_days_options(birthday, offset, enable_stat_method):
         options = {}
         if birthday:
             try:
