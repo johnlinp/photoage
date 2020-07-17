@@ -3,14 +3,14 @@ import datetime
 import exifread
 
 def calculate_days(file_path, *, birthday=datetime.datetime(1970, 1, 1), offset=datetime.timedelta(), methods=('exif',)):
-    photo_taken = _get_date_time(file_path, methods)
+    photo_taken = get_date_time(file_path, methods=methods)
     if photo_taken is None:
         return None
     delta = photo_taken - (birthday + offset)
     return delta.days
 
 
-def _get_date_time(file_path, methods):
+def get_date_time(file_path, *, methods=('exif',)):
     if 'exif' in methods:
         date_time = _get_date_time_from_exif(file_path)
     if date_time is None and 'stat' in methods:

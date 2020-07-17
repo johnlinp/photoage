@@ -37,6 +37,13 @@ photoage.calculate_days('/path/to/photo.jpg',
 photoage.calculate_days('/path/to/photo.jpg',
         birthday=datetime.datetime(2017, 6, 6),
         methods=('exif', 'stat'))
+
+# get the date time from a photo
+# it will return a datetime.datetime object
+photoage.get_date_time('/path/to/photo.jpg')
+
+# get the date time from a photo with specified methods
+photoage.get_date_time('/path/to/photo.jpg', methods=('exif', 'stat'))
 ```
 
 
