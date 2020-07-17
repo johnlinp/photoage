@@ -14,7 +14,7 @@ class PhotoageCli:
 
         parser.add_argument('file_paths', metavar='file-paths', nargs='+', help='The file paths of the photos')
         parser.add_argument('--birthday', '-b', type=str, default=None, help='The birthday of the character in the photos')
-        parser.add_argument('--offset', '-o', type=str, default=None, help='The birthday of the character in the photos')
+        parser.add_argument('--offset', '-o', type=str, default=None, help='Apply an offset to the cutting point')
         parser.add_argument('--summary', '-s', action='store_true', help='Switch to summary mode')
         parser.add_argument('--enable-stat-method', '-t', action='store_true', help='Whether stat method should be enabled')
         parser.add_argument('--verbose', '-v', action='store_true', help='When you want to debug')
